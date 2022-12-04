@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Container,
   InputArea,
@@ -11,10 +11,20 @@ import {
 import { ReactComponent as Logo } from "../../assets/icon.svg";
 import { ReactComponent as Logod } from "../../assets/icon-dark.svg";
 import { ThemeContext } from "../../context/darkLight";
+import { useDispatch, useSelector } from "react-redux";
+import { userApi } from "../../redux/apiSlice";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.data);
+
+  useEffect(() => {
+    dispatch(userApi());
+  }, [dispatch]);
+  
+console.log(data)
+
   const { dark, setDark } = useContext(ThemeContext);
-  console.log(dark);
   return (
     <Container>
       <TopBar className="flex-between">

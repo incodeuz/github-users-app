@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const getUsers = createAsyncThunk("users/getUsers", async (thunkAPI) => {
-  const res = await fetch("https://api.github.com/users").then((data) =>
-    data.json()
-  );
-  return res;
+export const userApi = createAsyncThunk("github/usersApi", async function () {
+  const response = await fetch("https://api.github.com/users/incodeuz");
+  const data = await response.json();
+  return data;
 });
 
 const initialState = {
@@ -16,20 +15,17 @@ const initialState = {
 export const dataSlice = createSlice({
   name: "Api Data",
   initialState,
+  reducer: {},
   extraReducers: {
-    [getUsers.pending]: (state) => {
-      state.loading = true;
-      state.status = "loading";
-      console.log(state.status);
+    [userApi.pending]: (state) => {
+      state.status = "loading...";
     },
-    [getUsers.fulfilled]: (state, { payload }) => {
-      state.loading = false;
+    [userApi.fulfilled]: (state, { payload }) => {
+      state.status = "resolved";
       state.data = payload;
     },
-    [getUsers.rejected]: (state) => {
-      state.loading = false;
-      state.status = "rejected";
-      console.log(state.status);
+    [userApi.rejected]: (state) => {
+      state.status = "error";
     },
   },
 });
