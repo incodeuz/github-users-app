@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Container,
   InputArea,
@@ -12,17 +12,19 @@ import { ReactComponent as Logo } from "../../assets/icon.svg";
 import { ReactComponent as Logod } from "../../assets/icon-dark.svg";
 import { ThemeContext } from "../../context/darkLight";
 import { useDispatch, useSelector } from "react-redux";
-import { userApi } from "../../redux/apiSlice";
+import { searchUser, userApi } from "../../redux/apiSlice";
 
 const Home = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
+  const inputValue = useSelector((state) => state.inputValue);
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     dispatch(userApi());
-  }, [dispatch]);
-  
-console.log(data)
+  }, []);
+
+  console.log(data, inputValue);
 
   const { dark, setDark } = useContext(ThemeContext);
   return (
@@ -40,9 +42,17 @@ console.log(data)
       <InputBox dark={dark} className="flex-between">
         <div className="flex lupa-input">
           <LupaIcon dark={dark} />
-          <InputArea dark={dark} type="search" />
+          <InputArea
+            dark={dark}
+            type="search"
+            onChange={(e) => {
+              setValue(e.target.value);
+            }}
+          />
         </div>
-        <TopButton dark={dark}>Search</TopButton>
+        <TopButton dark={dark} onClick={() => dispatch(searchUser(value))}>
+          Search
+        </TopButton>
       </InputBox>
     </Container>
   );

@@ -1,21 +1,28 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-export const userApi = createAsyncThunk("github/usersApi", async function () {
-  const response = await fetch("https://api.github.com/users/incodeuz");
-  const data = await response.json();
-  return data;
-});
-
 const initialState = {
   data: [],
   loading: false,
   status: "",
+  inputValue: "",
 };
+
+export const userApi = createAsyncThunk("github/usersApi", async function () {
+  const response = await fetch(
+    `https://api.github.com/users/${initialState.inputValue}`
+  );
+  const data = await response.json();
+  return data;
+});
 
 export const dataSlice = createSlice({
   name: "Api Data",
   initialState,
-  reducer: {},
+  reducers: {
+    searchUser(state, action) {
+      state.inputValue = action.payload;
+    },
+  },
   extraReducers: {
     [userApi.pending]: (state) => {
       state.status = "loading...";
@@ -29,4 +36,8 @@ export const dataSlice = createSlice({
     },
   },
 });
+
+export const { searchUser } = dataSlice.actions;
+
+export default dataSlice.reducer;
 export const dataReducer = dataSlice.reducer;
